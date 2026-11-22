@@ -43,6 +43,8 @@ public class PacientePanel extends JPanel implements Actualizable {
     private final PacienteService service = new PacienteService();
     /** Callback global. */
     private final Runnable onGlobalChange;
+    /** Permiso para eliminar pacientes. */
+    private final boolean puedeEliminar;
     /** Modelo de la tabla. */
     private final DefaultTableModel modelo = UiTheme.modelo("ID", "Nombre", "Apellido", "DNI", "Edad",
             "Celular", "Domicilio", "Estado", "Diagnóstico referido");
@@ -68,12 +70,23 @@ public class PacientePanel extends JPanel implements Actualizable {
     private String idSeleccionado;
 
     /**
-     * Crea el panel.
+     * Crea el panel con permisos de administrador.
      *
      * @param onGlobalChange callback para refrescar el resto de vistas
      */
     public PacientePanel(Runnable onGlobalChange) {
+        this(onGlobalChange, true);
+    }
+
+    /**
+     * Crea el panel con el permiso de eliminacion indicado.
+     *
+     * @param onGlobalChange callback para refrescar el resto de vistas
+     * @param puedeEliminar  si el usuario puede eliminar pacientes
+     */
+    public PacientePanel(Runnable onGlobalChange, boolean puedeEliminar) {
         this.onGlobalChange = onGlobalChange;
+        this.puedeEliminar = puedeEliminar;
         construirInterfaz();
     }
 
@@ -108,6 +121,7 @@ public class PacientePanel extends JPanel implements Actualizable {
         JButton nuevo = UiTheme.boton("Nuevo", UiTheme.TEXTO_SUAVE);
         JButton guardar = UiTheme.boton("Guardar", UiTheme.PRIMARIO);
         JButton eliminar = UiTheme.boton("Eliminar", new java.awt.Color(170, 60, 60));
+        eliminar.setEnabled(puedeEliminar);
         JButton historia = UiTheme.boton("Historia clínica", UiTheme.ACENTO);
         JPanel acciones = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
         acciones.setBackground(Color.WHITE);

@@ -7,4 +7,5 @@
 *.db
 *.db-journal
 .DS_Store
+*.kate-swp
 DOCUMENTACION_TECNICA.md

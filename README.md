@@ -67,9 +67,7 @@ Tablas principales: `paciente`, `terapeuta`, `horario`, `historial_clinico`, `pl
 
 ### Acceso
 
-La aplicación abre directamente el sistema con el perfil **Administrador NEUROCENTER**; no solicita usuario ni contraseña.
-
-Si se vuelve a activar `LoginDialog`, las credenciales de la base de datos son:
+La aplicación muestra `LoginDialog` al iniciar. Las credenciales de la base de datos son:
 
 | Usuario | Contraseña | Rol |
 |---|---|---|
@@ -77,6 +75,14 @@ Si se vuelve a activar `LoginDialog`, las credenciales de la base de datos son:
 | `apanaredes` | `neuro2026` | Terapeuta |
 
 Las contraseñas se almacenan como hash SHA-256.
+
+Los permisos se centralizan en `com.neurocenter.util.Permisos`:
+
+| Módulo / acción | Administrador | Terapeuta |
+|---|---|---|
+| Inicio, Pacientes, Citas y Sesiones, Planes y Progreso, Reportes, NEUROCENTER | Sí | Sí |
+| Eliminar pacientes | Sí | No |
+| Terapeutas, Pagos | Sí | No |
 
 ## 5. Recursos visuales
 

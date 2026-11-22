@@ -22,6 +22,7 @@ import javax.swing.UIManager;
 import com.neurocenter.config.AppConfig;
 import com.neurocenter.model.Usuario;
 import com.neurocenter.ui.components.UiTheme;
+import com.neurocenter.util.Permisos;
 
 /**
  * Ventana principal de NEUROCENTER. Organiza la navegacion entre modulos
@@ -46,6 +47,8 @@ public class MainFrame extends JFrame {
     private final JLabel etiquetaModulo = new JLabel("Inicio");
     /** Usuario autenticado. */
     private final Usuario usuario;
+    /** Rol del usuario autenticado. */
+    private final String rol;
 
     /**
      * Crea la ventana principal.
@@ -55,6 +58,7 @@ public class MainFrame extends JFrame {
     public MainFrame(Usuario usuario) {
         super(AppConfig.NOMBRE + " - Sistema de Gestión");
         this.usuario = usuario;
+        this.rol = usuario.getRol();
         construirInterfaz();
         setSize(1240, 780);
         setMinimumSize(new Dimension(1050, 650));
@@ -151,14 +155,31 @@ public class MainFrame extends JFrame {
         titulo.setBorder(BorderFactory.createEmptyBorder(0, 12, 8, 0));
         menu.add(titulo);
 
-        agregarModulo("Inicio", "Inicio", new DashboardPanel(actualizarGlobal));
-        agregarModulo("Pacientes", "Pacientes", new PacientePanel(actualizarGlobal));
-        agregarModulo("Terapeutas", "Terapeutas", new TerapeutaPanel(actualizarGlobal));
-        agregarModulo("Sesiones", "Citas y Sesiones", new SesionPanel(actualizarGlobal));
-        agregarModulo("Planes", "Planes y Progreso", new PlanPanel(actualizarGlobal));
-        agregarModulo("Pagos", "Pagos", new PagoPanel(actualizarGlobal));
-        agregarModulo("Reportes", "Reportes", new ReportePanel());
-        agregarModulo("Institucional", "NEUROCENTER", new InstitucionalPanel());
+        if (Permisos.puedeAcceder(rol, "Inicio")) {
+            agregarModulo("Inicio", "Inicio", new DashboardPanel(actualizarGlobal));
+        }
+        if (Permisos.puedeAcceder(rol, "Pacientes")) {
+            agregarModulo("Pacientes", "Pacientes",
+                    new PacientePanel(actualizarGlobal, Permisos.puedeEliminarPaciente(rol)));
+        }
+        if (Permisos.puedeAcceder(rol, "Terapeutas")) {
+            agregarModulo("Terapeutas", "Terapeutas", new TerapeutaPanel(actualizarGlobal));
+        }
+        if (Permisos.puedeAcceder(rol, "Sesiones")) {
+            agregarModulo("Sesiones", "Citas y Sesiones", new SesionPanel(actualizarGlobal));
+        }
+        if (Permisos.puedeAcceder(rol, "Planes")) {
+            agregarModulo("Planes", "Planes y Progreso", new PlanPanel(actualizarGlobal));
+        }
+        if (Permisos.puedeAcceder(rol, "Pagos")) {
+            agregarModulo("Pagos", "Pagos", new PagoPanel(actualizarGlobal));
+        }
+        if (Permisos.puedeAcceder(rol, "Reportes")) {
+            agregarModulo("Reportes", "Reportes", new ReportePanel());
+        }
+        if (Permisos.puedeAcceder(rol, "Institucional")) {
+            agregarModulo("Institucional", "NEUROCENTER", new InstitucionalPanel());
+        }
 
         for (Map.Entry<String, JButton> entrada : botones.entrySet()) {
             JButton boton = entrada.getValue();
@@ -216,7 +237,7 @@ public class MainFrame extends JFrame {
         JPanel pie = new JPanel(new BorderLayout());
         pie.setBackground(UiTheme.PRIMARIO_OSCURO);
         pie.setBorder(BorderFactory.createEmptyBorder(6, 20, 6, 20));
-        JLabel usuarioLabel = new JLabel("Sesión: " + usuario.getNombreCompleto() + " (" + usuario.getRol() + ")");
+        JLabel usuarioLabel = new JLabel("Sesión: " + usuario.getNombreCompleto() + " (" + rol + ")");
         usuarioLabel.setFont(UiTheme.FUENTE.deriveFont(Font.PLAIN, 11f));
         usuarioLabel.setForeground(new Color(200, 220, 230));
         JLabel derechos = new JLabel("© 2026 NEUROCENTER · " + AppConfig.DIRECCION);

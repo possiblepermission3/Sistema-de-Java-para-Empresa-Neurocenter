@@ -8,6 +8,7 @@ import com.neurocenter.config.AppConfig;
 import com.neurocenter.db.DatabaseInitializer;
 import com.neurocenter.exception.PersistenciaException;
 import com.neurocenter.model.Usuario;
+import com.neurocenter.ui.LoginDialog;
 import com.neurocenter.ui.MainFrame;
 import com.neurocenter.ui.components.UiTheme;
 
@@ -24,7 +25,7 @@ public final class NeuroCenterApp {
     }
 
     /**
-     * Inicializa la base de datos y lanza la interfaz principal en el EDT.
+     * Inicializa la base de datos, solicita las credenciales y lanza la interfaz principal en el EDT.
      *
      * @param args argumentos de linea de comandos (no utilizados)
      */
@@ -43,26 +44,16 @@ public final class NeuroCenterApp {
                         AppConfig.NOMBRE, JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            Usuario usuario = LoginDialog.mostrar(null);
+            if (usuario == null) {
+                return;
+            }
             try {
-                new MainFrame(crearUsuarioPorDefecto()).setVisible(true);
+                new MainFrame(usuario).setVisible(true);
             } catch (Exception error) {
                 JOptionPane.showMessageDialog(null, error.getMessage(), AppConfig.NOMBRE,
                         JOptionPane.ERROR_MESSAGE);
             }
         });
-    }
-
-    /**
-     * Crea el usuario administrador usado cuando el acceso directo esta activo.
-     *
-     * @return usuario por defecto
-     */
-    private static Usuario crearUsuarioPorDefecto() {
-        Usuario usuario = new Usuario();
-        usuario.setId("admin");
-        usuario.setRol("ADMIN");
-        usuario.setNombreCompleto("Administrador NEUROCENTER");
-        usuario.setActivo(true);
-        return usuario;
     }
 }
