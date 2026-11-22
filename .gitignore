@@ -1,0 +1,10 @@
+/target/
+/out/
+/lib/
+/docs/
+/.idea/
+*.iml
+*.db
+*.db-journal
+.DS_Store
+DOCUMENTACION_TECNICA.md
